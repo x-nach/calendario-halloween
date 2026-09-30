@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>Calendario Halloween 31 Días 🎃</title>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --card-bg: #14161f;
+      --accent: #ff6b1a;
+      --accent-hover: #ff853f;
+      --text: #f0f0f5;
+      --text-muted: #8e92a0;
+      --border: #222634;
+      --gold: #ffb830;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 30px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      color: var(--accent);
+      margin: 0 0 6px 0;
+      font-size: 2.1rem;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    /* CARD PRINCIPAL */
+    .card-today {
+      background-color: var(--card-bg);
+      border: 2px solid var(--accent);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 12px 36px rgba(255, 107, 26, 0.16);
+      margin-bottom: 35px;
+    }
+    .badge-today {
+      display: inline-block;
+      background: rgba(255, 107, 26, 0.15);
+      color: var(--accent);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    /* PÓSTER */
+    .poster-wrapper {
+      width: 100%;
+      max-width: 250px;
+      height: 360px;
+      margin: 16px auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+      background: linear-gradient(145deg, #1c1e28, #101117);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .poster-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .poster-fallback {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(180deg, #1d1212 0%, #0d0e12 100%);
+      width: 100%;
+      height: 100%;
+    }
+    .poster-fallback .icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .poster-fallback .text-fallback {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #ffd285;
+      text-transform: uppercase;
+    }
+
+    .movie-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin: 12px 0 6px 0;
+      line-height: 1.3;
+    }
+    .platform-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #1f222d;
+      border: 1px solid #333748;
+      color: #ffd285;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* SISTEMA DE PUNTUACIÓN (CALABAZAS) */
+    .rating-section {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .rating-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .stars-container {
+      display: inline-flex;
+      gap: 6px;
+      font-size: 1.6rem;
+      cursor: pointer;
+    }
+    .pumpkin-star {
+      filter: grayscale(100%) opacity(30%);
+      transition: transform 0.15s ease, filter 0.15s ease;
+      user-select: none;
+    }
+    .pumpkin-star.active {
+      filter: grayscale(0%) opacity(100%);
+    }
+    .pumpkin-star:hover {
+      transform: scale(1.2);
+    }
+
+    /* CAJA SECRETA / BLOQUEO */
+    .secret-box {
+      border: 2px dashed #353949;
+      border-radius: 14px;
+      padding: 55px 20px;
+      margin: 16px 0;
+    }
+    .btn-reveal {
+      background-color: var(--accent);
+      color: #111;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 13px 26px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.2s ease;
+      margin-top: 8px;
+    }
+    .btn-reveal:hover {
+      background-color: var(--accent-hover);
+      transform: scale(1.02);
+    }
+
+    /* HISTORIAL */
+    .history-section {
+      width: 100%;
+      text-align: left;
+    }
+    .history-section h2 {
+      font-size: 1.15rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      color: var(--text-muted);
+    }
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .history-item {
+      display: flex;
+      align-items: center;
+      background-color: var(--card-bg);
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      gap: 12px;
+    }
+    .history-thumb-wrapper {
+      width: 46px;
+      height: 64px;
+      border-radius: 6px;
+      overflow: hidden;
+      background-color: #1e212b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .history-thumb-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .history-day {
+      font-weight: 800;
+      color: var(--accent);
+      min-width: 50px;
+      font-size: 0.85rem;
+    }
+    .history-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .history-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .history-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+    }
+    .history-platform {
+      color: var(--text-muted);
+      background: #1e202a;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .mini-pumpkins {
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎃 Halloween Film Calendar</h1>
+    <div class="subtitle">31 días de terror sincronizados</div>
+
+    <!-- TARJETA DEL DÍA ACTUAL -->
+    <div class="card-today" id="main-card">
+      <div id="date-label" class="badge-today">Cargando fecha...</div>
+      
+      <!-- Vista bloqueada previa a Octubre -->
+      <div id="pre-october-view" style="display: none;">
+        <div class="secret-box">
+          <span style="font-size: 2.2rem; display: block; margin-bottom: 8px;">⏳</span>
+          <strong style="color: #ff9d5c; font-size: 1.15rem;">Aún no es Octubre</strong>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">
+            El calendario se desbloqueará automáticamente el 1 de octubre. ¡Prepara las palomitas!
+          </p>
+        </div>
+      </div>
+
+      <!-- Vista oculta del día actual (sin revelar aún) -->
+      <div id="unrevealed-view" style="display: none;">
+        <div class="secret-box">
+          <span style="font-size: 1.2rem; color: #aaa;">🔒 La película de hoy sigue oculta...</span>
+        </div>
+        <button class="btn-reveal" onclick="revelarPelicula()">¡Descubrir película de hoy!</button>
+      </div>
+
+      <!-- Vista revelada del día actual -->
+      <div id="revealed-view" style="display: none;">
+        <div class="poster-wrapper">
+          <img id="today-poster" class="poster-img" src="" alt="Poster" referrerpolicy="no-referrer" />
+          <div id="today-fallback" class="poster-fallback">
+            <div class="icon">🎬</div>
+            <div class="text-fallback" id="fallback-title"></div>
+          </div>
+        </div>
+        <div class="movie-title" id="today-title"></div>
+        <div>
+          <span class="platform-badge">📺 Ver en: <strong id="today-platform"></strong></span>
+        </div>
+
+        <!-- Calificación de hoy -->
+        <div class="rating-section">
+          <span class="rating-label">¿Qué tal estuvo? Califícala:</span>
+          <div class="stars-container" id="today-stars">
+            <span class="pumpkin-star" onclick="guardarRating(1)">🎃</span>
+            <span class="pumpkin-star" onclick="guardarRating(2)">🎃</span>
+            <span class="pumpkin-star" onclick="guardarRating(3)">🎃</span>
+            <span class="pumpkin-star" onclick="guardarRating(4)">🎃</span>
+            <span class="pumpkin-star" onclick="guardarRating(5)">🎃</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORIAL DE DÍAS ANTERIORES -->
+    <div class="history-section">
+      <h2>📜 Películas de días anteriores</h2>
+      <ul class="history-list" id="history-list"></ul>
+    </div>
+  </div>
+
+  <script>
+    // CALENDARIO MAESTRO FIJO (DÍA 1 AL 31)
+    // Orden sincronizado para que todos los dispositivos vean exactamente la misma película.
+    const calendarioMaestro = [
+      // Día 1
+      { titulo: "La autopsia de Jane Doe", plataforma: "Prime Video / Max", imagen: "https://m.media-amazon.com/images/M/MV5BMjA5MTgwMTY4MV5BMl5BanBnXkFtZTgwNTQ4Mzg3MDI@._V1_.jpg" },
+      // Día 2
+      { titulo: "Cementerio de mascotas", plataforma: "Paramount+", imagen: "https://m.media-amazon.com/images/M/MV5BMjA5OTg5Mzc0MV5BMl5BanBnXkFtZTcwNTg5NjM1NA@@._V1_.jpg" },
+      // Día 3
+      { titulo: "The Faculty", plataforma: "Paramount+", imagen: "https://m.media-amazon.com/images/M/MV5BNTBmZDI1M2ItZDA2ZS00ODViLWFlNmItNDZkMDUzNzA5N2U5XkEyXkFqcGc@._V1_.jpg" },
+      // Día 4
+      { titulo: "Coraline y la puerta secreta", plataforma: "Prime Video", imagen: "https://m.media-amazon.com/images/M/MV5BMzQ5ODcxNjY2N15BMl5BanBnXkFtZTcwOTg2ODE2MQ@@._V1_.jpg" },
+      // Día 5
+      { titulo: "Scream (Grita)", plataforma: "Paramount+ / Netflix", imagen: "https://m.media-amazon.com/images/M/MV5BMjA2NjU5MTg5OF5BMl5BanBnXkFtZTgwOTkyMzQxMDE@._V1_.jpg" },
+      // Día 6
+      { titulo: "El caso de la familia McPherson", plataforma: "YouTube / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BMGQ2NzllNzQtZDcxZi00YmU3LWJjZjctODNmZmRkYmFmNjQ0XkEyXkFqcGc@._V1_.jpg" },
+      // Día 7
+      { titulo: "El pueblo de los malditos", plataforma: "Apple TV / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BMGM5OTUxNDItZDJmMy00NDdiLWFiMWYtMDUxNGI3NjhkMWVmXkEyXkFqcGc@._V1_.jpg" },
+      // Día 8
+      { titulo: "Habitación 1408", plataforma: "Prime Video / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BMjA3NTY3NTE4N15BMl5BanBnXkFtZTcwNDQzNjc1MQ@@._V1_.jpg" },
+      // Día 9
+      { titulo: "La Cosa (Remake 2011)", plataforma: "Max / Prime Video", imagen: "https://m.media-amazon.com/images/M/MV5BMjA2OTk2NDk2NV5BMl5BanBnXkFtZTcwMjE5NzY4Ng@@._V1_.jpg" },
+      // Día 10
+      { titulo: "El barco fantasma (Ghost Ship)", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BYTk5NmY5ZTgtZGE4OS00MmNmLWJjYzMtMGIyMjQ0YTE0M2UwXkEyXkFqcGc@._V1_.jpg" },
+      // Día 11
+      { titulo: "Chucky: El muñeco diabólico", plataforma: "Prime Video / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BOGJmMGY3YzctMmQ4Yi00MzFhLTg2MmEtNGMyZGEyNDAxZmM2XkEyXkFqcGc@._V1_.jpg" },
+      // Día 12
+      { titulo: "Weapons", plataforma: "Max / VOD", imagen: "" },
+      // Día 13 (Viernes temático)
+      { titulo: "Viernes 13", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BNWMxYTYzYWQtNWJlNy00MTNuLTg0NTItZjY4NTk1NDI3ZDU3XkEyXkFqcGc@._V1_.jpg" },
+      // Día 14
+      { titulo: "Together", plataforma: "Prime Video / VOD", imagen: "" },
+      // Día 15
+      { titulo: "El amanecer de los muertos (Remake 2004)", plataforma: "Prime Video / Netflix", imagen: "https://m.media-amazon.com/images/M/MV5BYmE2YzVhNjItZTViYS00ZDg2LWJmYTMtODBhZjhmMmZlMzM2XkEyXkFqcGc@._V1_.jpg" },
+      // Día 16
+      { titulo: "Obsesión (Obsession)", plataforma: "Apple TV / VOD", imagen: "" },
+      // Día 17
+      { titulo: "Jeepers Creepers", plataforma: "Prime Video / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BYTRlNmZlZmQtODFmNS00MDUwLWE3MmYtNmMxZTZkNmIzMWFlXkEyXkFqcGc@._V1_.jpg" },
+      // Día 18
+      { titulo: "Bring Her Back", plataforma: "Max / VOD", imagen: "" },
+      // Día 19
+      { titulo: "La casa de cera (House of Wax)", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BMTc1MTk5NjczOV5BMl5BanBnXkFtZTcwOTQyODQzMQ@@._V1_.jpg" },
+      // Día 20
+      { titulo: "Nadie podrá salvarte", plataforma: "Disney+", imagen: "https://m.media-amazon.com/images/M/MV5BNjBiYmIwMTQtODlkOC00ZWEzLTg2NjQtZmM0NTNjNGI3NmRhXkEyXkFqcGc@._V1_.jpg" },
+      // Día 21
+      { titulo: "Alien: El octavo pasajero", plataforma: "Disney+", imagen: "https://m.media-amazon.com/images/M/MV5BNmU1OTIxZTYtNDVkNi00NDE4LWIxMmQtNjBlZTE4ZDY5YzVlXkEyXkFqcGc@._V1_.jpg" },
+      // Día 22
+      { titulo: "La Mosca (The Fly)", plataforma: "Disney+", imagen: "https://m.media-amazon.com/images/M/MV5BZGQzOTdhYjQtNDQ4OC00OTNkLThhMWQtOTRkYzk2MDc1M2E4XkEyXkFqcGc@._V1_.jpg" },
+      // Día 23
+      { titulo: "Hokum", plataforma: "Apple TV / VOD", imagen: "" },
+      // Día 24
+      { titulo: "La masacre de Texas (Remake Jessica Biel)", plataforma: "Max / Prime Video", imagen: "https://m.media-amazon.com/images/M/MV5BMjA4MTg5NTc1Ml5BMl5BanBnXkFtZTYwNTc5MDM3._V1_.jpg" },
+      // Día 25
+      { titulo: "Pesadilla en la calle Elm", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BYTJlNmRhMmEtZGU4Yy00YjBhLWE1ZTYtOWY3NGVjMzY1MWY3XkEyXkFqcGc@._V1_.jpg" },
+      // Día 26
+      { titulo: "El Conjuro", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BMTM3NjA1NDMyMV5BMl5BanBnXkFtZTcwMDQzNDMzOQ@@._V1_.jpg" },
+      // Día 27
+      { titulo: "Evil Dead: El despertar", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BMmZiN2VmMjktZDE5OC00ZWRhLWI1Ny1jMTItZTU0ZmJhMzRjYjkxXkEyXkFqcGc@._V1_.jpg" },
+      // Día 28
+      { titulo: "El Exorcista", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BYTI4MWVlYjMtNmMyMC00ZTFmLWJjM2QtYjY2YjcwNGNmMTEyXkEyXkFqcGc@._V1_.jpg" },
+      // Día 29
+      { titulo: "El extraño mundo de Jack", plataforma: "Disney+", imagen: "https://m.media-amazon.com/images/M/MV5BNWE4OTNiM2ItYTBiYi00OGE3LWE2ZTYtN2RmODM1MzMyYTIwXkEyXkFqcGc@._V1_.jpg" },
+      // Día 30 (Víspera)
+      { titulo: "Trick 'r Treat (Truco o trato)", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BYTI1MjM2MmItMDMzNC00MmZkLTkzMDYtYmExZTk3NTEwZDUxXkEyXkFqcGc@._V1_.jpg" },
+      // Día 31 (Halloween)
+      { titulo: "Halloween (1978)", plataforma: "Prime Video / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BNTIwMTkyMzg1Ml5BMl5BanBnXkFtZTYwMTEyNDk4._V1_.jpg" }
+    ];
+
+    // CONTROL DE FECHA
+    const hoy = new Date();
+    const mes = hoy.getMonth(); // 9 = Octubre (0-indexado)
+    const dia = hoy.getDate();  // 1 al 31
+
+    const esOctubre = (mes === 9);
+    const esAntesDeOctubre = (mes < 9);
+
+    const dateLabel = document.getElementById("date-label");
+
+    if (esAntesDeOctubre) {
+      dateLabel.innerText = "📅 Esperando Octubre...";
+      document.getElementById("pre-october-view").style.display = "block";
+      document.getElementById("history-list").innerHTML = `<li style="color: #666; font-size: 0.9rem;">El calendario aún no ha comenzado.</li>`;
+    } else {
+      // Estamos en Octubre (o después)
+      const diaActualClampeado = esOctubre ? dia : 31;
+      dateLabel.innerText = `📅 Hoy: Día ${diaActualClampeado} de Octubre`;
+
+      const peliHoy = calendarioMaestro[diaActualClampeado - 1];
+      const claveRevelado = `revelado_dia_${diaActualClampeado}`;
+
+      if (localStorage.getItem(claveRevelado) === "true") {
+        mostrarPelicula(peliHoy, diaActualClampeado);
+      } else {
+        document.getElementById("unrevealed-view").style.display = "block";
+      }
+
+      window.revelarPelicula = function() {
+        localStorage.setItem(claveRevelado, "true");
+        mostrarPelicula(peliHoy, diaActualClampeado);
+      };
+
+      // Cargar historial de días anteriores
+      cargarHistorial(diaActualClampeado);
+    }
+
+    function mostrarPelicula(peli, diaNum) {
+      document.getElementById("unrevealed-view").style.display = "none";
+      const view = document.getElementById("revealed-view");
+      view.style.display = "block";
+
+      const poster = document.getElementById("today-poster");
+      const fallback = document.getElementById("today-fallback");
+
+      if (peli.imagen && peli.imagen.trim() !== "") {
+        poster.style.display = "block";
+        fallback.style.display = "none";
+        poster.src = peli.imagen;
+        poster.onerror = () => {
+          poster.style.display = "none";
+          fallback.style.display = "flex";
+          document.getElementById("fallback-title").innerText = peli.titulo;
+        };
+      } else {
+        poster.style.display = "none";
+        fallback.style.display = "flex";
+        document.getElementById("fallback-title").innerText = peli.titulo;
+      }
+
+      document.getElementById("today-title").innerText = peli.titulo;
+      document.getElementById("today-platform").innerText = peli.plataforma;
+
+      // Cargar rating previo de hoy si existe
+      actualizarEstrellasHoy(diaNum);
+    }
+
+    // GESTIÓN DE RATINGS (CALABAZAS)
+    function guardarRating(puntos) {
+      const diaNum = esOctubre ? dia : 31;
+      localStorage.setItem(`rating_dia_${diaNum}`, puntos);
+      actualizarEstrellasHoy(diaNum);
+      cargarHistorial(diaNum);
+    }
+
+    function actualizarEstrellasHoy(diaNum) {
+      const guardado = parseInt(localStorage.getItem(`rating_dia_${diaNum}`)) || 0;
+      const estrellas = document.querySelectorAll("#today-stars .pumpkin-star");
+      estrellas.forEach((star, index) => {
+        if (index < guardado) {
+          star.classList.add("active");
+        } else {
+          star.classList.remove("active");
+        }
+      });
+    }
+
+    function guardarRatingHistorial(diaHist, puntos) {
+      localStorage.setItem(`rating_dia_${diaHist}`, puntos);
+      cargarHistorial(esOctubre ? dia : 31);
+    }
+
+    function cargarHistorial(hastaDia) {
+      const historyList = document.getElementById("history-list");
+      historyList.innerHTML = "";
+
+      if (hastaDia <= 1) {
+        historyList.innerHTML = `<li style="color: #666; font-size: 0.9rem;">No hay días anteriores todavía. ¡Es el primer día!</li>`;
+        return;
+      }
+
+      for (let d = 1; d < hastaDia; d++) {
+        const itemPeli = calendarioMaestro[d - 1];
+        const rating = parseInt(localStorage.getItem(`rating_dia_${d}`)) || 0;
+
+        let ratingHtml = "";
+        for (let i = 1; i <= 5; i++) {
+          const activeClass = i <= rating ? "active" : "";
+          ratingHtml += `<span class="pumpkin-star ${activeClass}" onclick="guardarRatingHistorial(${d}, ${i})">🎃</span>`;
+        }
+
+        const li = document.createElement("li");
+        li.className = "history-item";
+
+        const tieneImg = itemPeli.imagen && itemPeli.imagen.trim() !== "";
+        li.innerHTML = `
+          <span class="history-day">Día ${d}</span>
+          <div class="history-thumb-wrapper">
+            ${tieneImg 
+              ? `<img src="${itemPeli.imagen}" class="history-thumb-img" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='🎬'" />` 
+              : `🎬`
+            }
+          </div>
+          <div class="history-content">
+            <span class="history-title">${itemPeli.titulo}</span>
+            <div class="history-meta">
+              <span class="history-platform">${itemPeli.plataforma}</span>
+              <div class="mini-pumpkins">${ratingHtml}</div>
+            </div>
+          </div>
+        `;
+        historyList.appendChild(li);
+      }
+    }
+  </script>
+</body>
+</html>
