@@ -466,7 +466,7 @@
 
     <!-- HISTORIAL DE DÍAS ANTERIORES -->
     <div class="history-section">
-      <h2>📜 Días anteriores & Reseñas</h2>
+      <h2>📜 Días anteriores & Nuestras Reseñas</h2>
       <ul class="history-list" id="history-list"></ul>
     </div>
   </div>
@@ -622,7 +622,7 @@
     // RENDERIZADO DE EVALUACIÓN
     async function renderSeccionEvaluacion(diaNum, tituloPeli) {
       const container = document.getElementById("eval-section");
-      container.innerHTML = `<div style="color: #888; font-size: 0.85rem; padding: 20px;">Cargando opiniones...</div>`;
+      container.innerHTML = `<div style="color: #888; font-size: 0.85rem; padding: 20px;">Cargando nuestras opiniones...</div>`;
 
       const todasLasResenas = await obtenerResenasDelDia(diaNum);
       const miEvaluacion = todasLasResenas[MI_USER_ID];
@@ -661,12 +661,12 @@
             ${criteriosHtml}
 
             <div class="form-group">
-              <label>Tu nombre:</label>
+              <label>Su hermoso nombre ❤:</label>
               <input type="text" id="reviewer-name" class="form-input" placeholder="Tu nombre" value="${nombreGuardado}" />
             </div>
 
             <div class="form-group">
-              <label>Tu reseña u opinión personal:</label>
+              <label>Reseña a esta peli:</label>
               <textarea id="reviewer-text" class="form-textarea" placeholder="Escribe aquí tu opinión sobre la película..."></textarea>
             </div>
 
@@ -695,7 +695,7 @@
           htmlResenas += `
             <div class="locked-card ${esMia ? 'is-me' : 'is-partner'}">
               <span class="locked-badge ${esMia ? '' : 'is-partner'}">
-                ${esMia ? '🔒 Tu calificación sellada' : '💬 Opinión de ' + data.nombre}
+                ${esMia ? '🔒 Tu calificación definitiva' : '💬 Opinión de ' + data.nombre}
               </span>
               <div style="font-size: 0.85rem; color: #8e92a0; margin-bottom: 8px;">
                 Evaluado por: <strong style="color: #fff;">${data.nombre}</strong> · 
@@ -755,7 +755,7 @@
     }
 
     window.guardarEvaluacionDefinitiva = async function(diaNum, tituloPeli) {
-      const confirmacion = confirm("⚠️ ¿Confirmas esta evaluación? Quedará SELLADA y se sincronizará con tu acompañante.");
+      const confirmacion = confirm("⚠️ ¿Confirmas esta evaluación? No podras editarla y se sincronizará con tu Amor 😳.");
       if (!confirmacion) return;
 
       const valores = {};
