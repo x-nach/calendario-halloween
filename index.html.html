@@ -4,46 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="no-referrer">
-  <title>Calendario Halloween 31 Días 🎃</title>
+  <title>Spooky Season: 31 Noches 🎃</title>
   <style>
     :root {
-      --bg: #0b0c10;
-      --card-bg: #14161f;
+      --bg: #0a0b0e;
+      --card-bg: #13151d;
+      --card-inner: #191c26;
       --accent: #ff6b1a;
       --accent-hover: #ff853f;
       --text: #f0f0f5;
       --text-muted: #8e92a0;
-      --border: #222634;
+      --border: #232736;
       --gold: #ffb830;
+      --bonus: #e056fd;
     }
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       background-color: var(--bg);
       color: var(--text);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
-      padding: 30px 16px;
+      padding: 24px 14px;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
     }
     .container {
-      max-width: 520px;
+      max-width: 540px;
       width: 100%;
       text-align: center;
     }
     h1 {
       color: var(--accent);
-      margin: 0 0 6px 0;
-      font-size: 2.1rem;
+      margin: 0 0 4px 0;
+      font-size: 2rem;
     }
     .subtitle {
       color: var(--text-muted);
-      margin-bottom: 24px;
-      font-size: 0.95rem;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
     }
 
     /* CARD PRINCIPAL */
@@ -51,36 +51,43 @@
       background-color: var(--card-bg);
       border: 2px solid var(--accent);
       border-radius: 18px;
-      padding: 24px;
+      padding: 22px 18px;
       box-shadow: 0 12px 36px rgba(255, 107, 26, 0.16);
-      margin-bottom: 35px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .card-today.is-bonus {
+      border-color: var(--bonus);
+      box-shadow: 0 12px 36px rgba(224, 86, 253, 0.25);
     }
     .badge-today {
       display: inline-block;
       background: rgba(255, 107, 26, 0.15);
       color: var(--accent);
-      padding: 6px 16px;
+      padding: 5px 14px;
       border-radius: 20px;
       font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 16px;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+    }
+    .badge-today.is-bonus {
+      background: rgba(224, 86, 253, 0.15);
+      color: var(--bonus);
     }
 
-    /* PÓSTER */
     .poster-wrapper {
       width: 100%;
       max-width: 250px;
       height: 360px;
-      margin: 16px auto;
+      margin: 14px auto;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
-      background: linear-gradient(145deg, #1c1e28, #101117);
+      background: #11131a;
       border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
     .poster-img {
       width: 100%;
@@ -98,22 +105,11 @@
       width: 100%;
       height: 100%;
     }
-    .poster-fallback .icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-    }
-    .poster-fallback .text-fallback {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: #ffd285;
-      text-transform: uppercase;
-    }
-
     .movie-title {
       font-size: 1.45rem;
       font-weight: 800;
-      margin: 12px 0 6px 0;
-      line-height: 1.3;
+      margin: 10px 0 6px 0;
+      line-height: 1.25;
     }
     .platform-badge {
       display: inline-flex;
@@ -128,58 +124,190 @@
       font-weight: 600;
     }
 
-    /* SISTEMA DE PUNTUACIÓN (CALABAZAS) */
-    .rating-section {
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
+    /* EVALUACIÓN 0 A 10 */
+    .evaluation-container {
+      margin-top: 24px;
+      text-align: left;
+      background: var(--card-inner);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 16px;
     }
-    .rating-label {
+    .eval-header {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .criterion-row {
+      margin-bottom: 14px;
+    }
+    .criterion-label {
+      display: flex;
+      justify-content: space-between;
       font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      display: block;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #d1d5db;
     }
-    .stars-container {
-      display: inline-flex;
-      gap: 6px;
-      font-size: 1.6rem;
+    .criterion-val {
+      color: var(--gold);
+      font-weight: 700;
+    }
+    .rating-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pumpkin-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      background: #2a2e3d;
+      border-radius: 5px;
+      outline: none;
+    }
+    .pumpkin-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
       cursor: pointer;
+      box-shadow: 0 0 8px rgba(255, 107, 26, 0.6);
     }
-    .pumpkin-star {
-      filter: grayscale(100%) opacity(30%);
-      transition: transform 0.15s ease, filter 0.15s ease;
-      user-select: none;
-    }
-    .pumpkin-star.active {
-      filter: grayscale(0%) opacity(100%);
-    }
-    .pumpkin-star:hover {
-      transform: scale(1.2);
+    .pumpkin-range::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
     }
 
-    /* CAJA SECRETA / BLOQUEO */
-    .secret-box {
-      border: 2px dashed #353949;
-      border-radius: 14px;
-      padding: 55px 20px;
-      margin: 16px 0;
+    .view-type-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
     }
-    .btn-reveal {
-      background-color: var(--accent);
+    .btn-choice {
+      flex: 1;
+      padding: 9px;
+      background: #232736;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: #bbb;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .btn-choice.active {
+      background: rgba(255, 107, 26, 0.2);
+      border-color: var(--accent);
+      color: #ff9d5c;
+    }
+
+    .form-group {
+      margin-top: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    .form-input, .form-textarea {
+      width: 100%;
+      background: #11131a;
+      border: 1px solid #2a2e3d;
+      border-radius: 8px;
+      padding: 10px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--accent);
+    }
+    .form-textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .summary-box {
+      margin-top: 18px;
+      background: #12141c;
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+    }
+    .score-number {
+      font-size: 2.3rem;
+      font-weight: 900;
+      color: var(--accent);
+    }
+    .score-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--accent);
       color: #111;
       border: none;
+      padding: 12px;
+      font-size: 0.95rem;
       font-weight: 700;
-      font-size: 1rem;
-      padding: 13px 26px;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.15s ease, background 0.2s ease;
-      margin-top: 8px;
+      margin-top: 14px;
+      transition: filter 0.2s ease;
     }
-    .btn-reveal:hover {
-      background-color: var(--accent-hover);
-      transform: scale(1.02);
+    .btn-submit:hover { filter: brightness(1.1); }
+    .btn-share {
+      width: 100%;
+      background: #25d366;
+      color: #0b0c10;
+      border: none;
+      padding: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .locked-card {
+      background: #11131a;
+      border: 1px solid #2b3040;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      text-align: left;
+    }
+    .locked-badge {
+      display: inline-block;
+      background: #202432;
+      color: #aaa;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
     }
 
     /* HISTORIAL */
@@ -203,17 +331,19 @@
       gap: 12px;
     }
     .history-item {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .history-top {
       display: flex;
       align-items: center;
-      background-color: var(--card-bg);
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
       gap: 12px;
     }
     .history-thumb-wrapper {
-      width: 46px;
-      height: 64px;
+      width: 44px;
+      height: 62px;
       border-radius: 6px;
       overflow: hidden;
       background-color: #1e212b;
@@ -230,73 +360,72 @@
     .history-day {
       font-weight: 800;
       color: var(--accent);
-      min-width: 50px;
+      min-width: 48px;
       font-size: 0.85rem;
     }
     .history-content {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
     }
     .history-title {
       font-size: 0.95rem;
       font-weight: 600;
     }
-    .history-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .history-details-toggle {
       font-size: 0.75rem;
+      color: var(--accent);
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      margin-top: 4px;
+      text-decoration: underline;
     }
-    .history-platform {
-      color: var(--text-muted);
-      background: #1e202a;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    .mini-pumpkins {
-      font-size: 0.9rem;
-      letter-spacing: 2px;
+    .history-review-box {
+      display: none;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #2a2e3d;
+      font-size: 0.85rem;
+      color: #cfd3dc;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>🎃 Maratón de Halloween 👻</h1>
-    <div class="subtitle">31 días de terror sincronizados</div>
+    <h1 id="app-title">🎃 Spooky Season: 31 Noches</h1>
+    <div class="subtitle" id="app-subtitle">Una película diaria sin repetir · Octubre</div>
 
     <!-- TARJETA DEL DÍA ACTUAL -->
     <div class="card-today" id="main-card">
       <div id="date-label" class="badge-today">Cargando fecha...</div>
       
-      <!-- Vista bloqueada previa a Octubre -->
+      <!-- Antes de Octubre -->
       <div id="pre-october-view" style="display: none;">
-        <div class="secret-box">
+        <div style="border: 2px dashed #353949; border-radius: 14px; padding: 50px 20px;">
           <span style="font-size: 2.2rem; display: block; margin-bottom: 8px;">⏳</span>
           <strong style="color: #ff9d5c; font-size: 1.15rem;">Aún no es Octubre</strong>
           <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">
-            El calendario se desbloqueará automáticamente el 1 de octubre. ¡Prepara las palomitas!
+            El calendario se desbloqueará automáticamente el 1 de octubre.
           </p>
         </div>
       </div>
 
-      <!-- Vista oculta del día actual (sin revelar aún) -->
+      <!-- Día actual sin revelar -->
       <div id="unrevealed-view" style="display: none;">
-        <div class="secret-box">
+        <div style="border: 2px dashed #353949; border-radius: 14px; padding: 50px 20px; margin: 16px 0;">
           <span style="font-size: 1.2rem; color: #aaa;">🔒 La película de hoy sigue oculta...</span>
         </div>
-        <button class="btn-reveal" onclick="revelarPelicula()">¡Descubrir película de hoy!</button>
+        <button class="btn-submit" onclick="revelarPelicula()" style="width: auto; padding: 12px 28px;">¡Descubrir película de hoy!</button>
       </div>
 
-      <!-- Vista revelada del día actual -->
+      <!-- Día actual revelado -->
       <div id="revealed-view" style="display: none;">
         <div class="poster-wrapper">
           <img id="today-poster" class="poster-img" src="" alt="Poster" referrerpolicy="no-referrer" />
           <div id="today-fallback" class="poster-fallback">
-            <div class="icon">🎬</div>
-            <div class="text-fallback" id="fallback-title"></div>
+            <div style="font-size: 3rem; margin-bottom: 10px;">🎬</div>
+            <div id="fallback-title" style="font-weight: 800; font-size: 1.1rem; color: #ffd285;"></div>
           </div>
         </div>
         <div class="movie-title" id="today-title"></div>
@@ -304,99 +433,67 @@
           <span class="platform-badge">📺 Ver en: <strong id="today-platform"></strong></span>
         </div>
 
-        <!-- Calificación de hoy -->
-        <div class="rating-section">
-          <span class="rating-label">¿Qué tal estuvo? Califícala:</span>
-          <div class="stars-container" id="today-stars">
-            <span class="pumpkin-star" onclick="guardarRating(1)">🎃</span>
-            <span class="pumpkin-star" onclick="guardarRating(2)">🎃</span>
-            <span class="pumpkin-star" onclick="guardarRating(3)">🎃</span>
-            <span class="pumpkin-star" onclick="guardarRating(4)">🎃</span>
-            <span class="pumpkin-star" onclick="guardarRating(5)">🎃</span>
-          </div>
-        </div>
+        <div id="eval-section"></div>
       </div>
     </div>
 
     <!-- HISTORIAL DE DÍAS ANTERIORES -->
     <div class="history-section">
-      <h2>📜 Películas de días anteriores</h2>
+      <h2>📜 Días anteriores & Reseñas</h2>
       <ul class="history-list" id="history-list"></ul>
     </div>
   </div>
 
   <script>
-    // CALENDARIO MAESTRO FIJO (DÍA 1 AL 31)
-    // Orden sincronizado para que todos los dispositivos vean exactamente la misma película.
+    // CALENDARIO MAESTRO SECRETO (NO MIRAR PARA EVITAR SPOILERS)
     const calendarioMaestro = [
-      // Día 1
-      { titulo: "La autopsia de Jane Doe", plataforma: "Prime Video / Max", imagen: "https://m.media-amazon.com/images/M/MV5BMjA5MTgwMTY4MV5BMl5BanBnXkFtZTgwNTQ4Mzg3MDI@._V1_.jpg" },
-      // Día 2
-      { titulo: "Cementerio de mascotas", plataforma: "Paramount+", imagen: "https://m.media-amazon.com/images/M/MV5BMjA5OTg5Mzc0MV5BMl5BanBnXkFtZTcwNTg5NjM1NA@@._V1_.jpg" },
-      // Día 3
-      { titulo: "The Faculty", plataforma: "Paramount+", imagen: "https://m.media-amazon.com/images/M/MV5BNTBmZDI1M2ItZDA2ZS00ODViLWFlNmItNDZkMDUzNzA5N2U5XkEyXkFqcGc@._V1_.jpg" },
-      // Día 4
-      { titulo: "Coraline y la puerta secreta", plataforma: "Prime Video", imagen: "https://m.media-amazon.com/images/M/MV5BMzQ5ODcxNjY2N15BMl5BanBnXkFtZTcwOTg2ODE2MQ@@._V1_.jpg" },
-      // Día 5
-      { titulo: "Scream (Grita)", plataforma: "Paramount+ / Netflix", imagen: "https://m.media-amazon.com/images/M/MV5BMjA2NjU5MTg5OF5BMl5BanBnXkFtZTgwOTkyMzQxMDE@._V1_.jpg" },
-      // Día 6
-      { titulo: "El caso de la familia McPherson", plataforma: "YouTube / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BMGQ2NzllNzQtZDcxZi00YmU3LWJjZjctODNmZmRkYmFmNjQ0XkEyXkFqcGc@._V1_.jpg" },
-      // Día 7
-      { titulo: "El pueblo de los malditos", plataforma: "Apple TV / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BMGM5OTUxNDItZDJmMy00NDdiLWFiMWYtMDUxNGI3NjhkMWVmXkEyXkFqcGc@._V1_.jpg" },
-      // Día 8
-      { titulo: "Habitación 1408", plataforma: "Prime Video / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BMjA3NTY3NTE4N15BMl5BanBnXkFtZTcwNDQzNjc1MQ@@._V1_.jpg" },
-      // Día 9
-      { titulo: "La Cosa (Remake 2011)", plataforma: "Max / Prime Video", imagen: "https://m.media-amazon.com/images/M/MV5BMjA2OTk2NDk2NV5BMl5BanBnXkFtZTcwMjE5NzY4Ng@@._V1_.jpg" },
-      // Día 10
-      { titulo: "El barco fantasma (Ghost Ship)", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BYTk5NmY5ZTgtZGE4OS00MmNmLWJjYzMtMGIyMjQ0YTE0M2UwXkEyXkFqcGc@._V1_.jpg" },
-      // Día 11
-      { titulo: "Chucky: El muñeco diabólico", plataforma: "Prime Video / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BOGJmMGY3YzctMmQ4Yi00MzFhLTg2MmEtNGMyZGEyNDAxZmM2XkEyXkFqcGc@._V1_.jpg" },
-      // Día 12
-      { titulo: "Weapons", plataforma: "Max / VOD", imagen: "" },
-      // Día 13 (Viernes temático)
-      { titulo: "Viernes 13", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BNWMxYTYzYWQtNWJlNy00MTNuLTg0NTItZjY4NTk1NDI3ZDU3XkEyXkFqcGc@._V1_.jpg" },
-      // Día 14
-      { titulo: "Together", plataforma: "Prime Video / VOD", imagen: "" },
-      // Día 15
-      { titulo: "El amanecer de los muertos (Remake 2004)", plataforma: "Prime Video / Netflix", imagen: "https://m.media-amazon.com/images/M/MV5BYmE2YzVhNjItZTViYS00ZDg2LWJmYTMtODBhZjhmMmZlMzM2XkEyXkFqcGc@._V1_.jpg" },
-      // Día 16
-      { titulo: "Obsesión (Obsession)", plataforma: "Apple TV / VOD", imagen: "" },
-      // Día 17
-      { titulo: "Jeepers Creepers", plataforma: "Prime Video / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BYTRlNmZlZmQtODFmNS00MDUwLWE3MmYtNmMxZTZkNmIzMWFlXkEyXkFqcGc@._V1_.jpg" },
-      // Día 18
-      { titulo: "Bring Her Back", plataforma: "Max / VOD", imagen: "" },
-      // Día 19
-      { titulo: "La casa de cera (House of Wax)", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BMTc1MTk5NjczOV5BMl5BanBnXkFtZTcwOTQyODQzMQ@@._V1_.jpg" },
-      // Día 20
-      { titulo: "Nadie podrá salvarte", plataforma: "Disney+", imagen: "https://m.media-amazon.com/images/M/MV5BNjBiYmIwMTQtODlkOC00ZWEzLTg2NjQtZmM0NTNjNGI3NmRhXkEyXkFqcGc@._V1_.jpg" },
-      // Día 21
-      { titulo: "Alien: El octavo pasajero", plataforma: "Disney+", imagen: "https://m.media-amazon.com/images/M/MV5BNmU1OTIxZTYtNDVkNi00NDE4LWIxMmQtNjBlZTE4ZDY5YzVlXkEyXkFqcGc@._V1_.jpg" },
-      // Día 22
-      { titulo: "La Mosca (The Fly)", plataforma: "Disney+", imagen: "https://m.media-amazon.com/images/M/MV5BZGQzOTdhYjQtNDQ4OC00OTNkLThhMWQtOTRkYzk2MDc1M2E4XkEyXkFqcGc@._V1_.jpg" },
-      // Día 23
-      { titulo: "Hokum", plataforma: "Apple TV / VOD", imagen: "" },
-      // Día 24
-      { titulo: "La masacre de Texas (Remake Jessica Biel)", plataforma: "Max / Prime Video", imagen: "https://m.media-amazon.com/images/M/MV5BMjA4MTg5NTc1Ml5BMl5BanBnXkFtZTYwNTc5MDM3._V1_.jpg" },
-      // Día 25
-      { titulo: "Pesadilla en la calle Elm", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BYTJlNmRhMmEtZGU4Yy00YjBhLWE1ZTYtOWY3NGVjMzY1MWY3XkEyXkFqcGc@._V1_.jpg" },
-      // Día 26
-      { titulo: "El Conjuro", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BMTM3NjA1NDMyMV5BMl5BanBnXkFtZTcwMDQzNDMzOQ@@._V1_.jpg" },
-      // Día 27
-      { titulo: "Evil Dead: El despertar", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BMmZiN2VmMjktZDE5OC00ZWRhLWI1Ny1jMTItZTU0ZmJhMzRjYjkxXkEyXkFqcGc@._V1_.jpg" },
-      // Día 28
-      { titulo: "El Exorcista", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BYTI4MWVlYjMtNmMyMC00ZTFmLWJjM2QtYjY2YjcwNGNmMTEyXkEyXkFqcGc@._V1_.jpg" },
-      // Día 29
-      { titulo: "El extraño mundo de Jack", plataforma: "Disney+", imagen: "https://m.media-amazon.com/images/M/MV5BNWE4OTNiM2ItYTBiYi00OGE3LWE2ZTYtN2RmODM1MzMyYTIwXkEyXkFqcGc@._V1_.jpg" },
-      // Día 30 (Víspera)
-      { titulo: "Trick 'r Treat (Truco o trato)", plataforma: "Max", imagen: "https://m.media-amazon.com/images/M/MV5BYTI1MjM2MmItMDMzNC00MmZkLTkzMDYtYmExZTk3NTEwZDUxXkEyXkFqcGc@._V1_.jpg" },
-      // Día 31 (Halloween)
-      { titulo: "Halloween (1978)", plataforma: "Prime Video / VOD", imagen: "https://m.media-amazon.com/images/M/MV5BNTIwMTkyMzg1Ml5BMl5BanBnXkFtZTYwMTEyNDk4._V1_.jpg" }
+      { dia: 1, titulo: "La autopsia de Jane Doe", plataforma: "Prime Video / Max", imagen: "jane-doe.jpg" },
+      { dia: 2, titulo: "Coraline y la puerta secreta", plataforma: "Prime Video", imagen: "coraline.jpg" },
+      { dia: 3, titulo: "El barco fantasma (Ghost Ship)", plataforma: "Max", imagen: "barco-fantasma.jpg" },
+      { dia: 4, titulo: "La Mosca (The Fly)", plataforma: "Disney+", imagen: "la-mosca.jpg" },
+      { dia: 5, titulo: "Jeepers Creepers", plataforma: "Prime Video / VOD", imagen: "jeepers-creepers.jpg" },
+      { dia: 6, titulo: "Trick 'r Treat (Truco o trato)", plataforma: "Max", imagen: "trick-r-treat.jpg" },
+      { dia: 7, titulo: "The Faculty", plataforma: "Paramount+", imagen: "the-faculty.jpg" },
+      { dia: 8, titulo: "Nadie podrá salvarte", plataforma: "Disney+", imagen: "nadie-podra-salvarte.jpg" },
+      { dia: 9, titulo: "El amanecer de los muertos (Remake 2004)", plataforma: "Prime Video / Netflix", imagen: "amanecer-muertos.jpg" },
+      { dia: 10, titulo: "Pesadilla en la calle Elm", plataforma: "Max", imagen: "pesadilla-elm.jpg" },
+      { dia: 11, titulo: "Weapons", plataforma: "Max / VOD", imagen: "weapons.jpg" },
+      { dia: 12, titulo: "Scream (Grita)", plataforma: "Paramount+ / Netflix", imagen: "scream.jpg" },
+      { dia: 13, titulo: "Viernes 13", plataforma: "Max", imagen: "viernes-13.jpg" },
+      { dia: 14, titulo: "Habitación 1408", plataforma: "Prime Video / VOD", imagen: "habitacion-1408.jpg" },
+      { dia: 15, titulo: "Cementerio de mascotas", plataforma: "Paramount+", imagen: "cementerio-mascotas.jpg" },
+      { dia: 16, titulo: "El pueblo de los malditos", plataforma: "Apple TV / VOD", imagen: "pueblo-malditos.jpg" },
+      { dia: 17, titulo: "Evil Dead: El despertar", plataforma: "Max", imagen: "evil-dead.jpg" },
+      { dia: 18, titulo: "Together", plataforma: "Prime Video / VOD", imagen: "together.jpg" },
+      { dia: 19, titulo: "El Conjuro", plataforma: "Max", imagen: "el-conjuro.jpg" },
+      { dia: 20, titulo: "La Cosa (Remake 2011)", plataforma: "Max / Prime Video", imagen: "la-cosa.jpg" },
+      { dia: 21, titulo: "El extraño mundo de Jack", plataforma: "Disney+", imagen: "jack.jpg" },
+      { dia: 22, titulo: "Obsesión (Obsession)", plataforma: "Apple TV / VOD", imagen: "obsesion.jpg" },
+      { dia: 23, titulo: "La casa de cera (House of Wax)", plataforma: "Max", imagen: "casa-de-cera.jpg" },
+      { dia: 24, titulo: "Chucky: El muñeco diabólico", plataforma: "Prime Video / VOD", imagen: "chucky.jpg" },
+      { dia: 25, titulo: "Bring Her Back", plataforma: "Max / VOD", imagen: "bring-her-back.jpg" },
+      { dia: 26, titulo: "El caso de la familia McPherson", plataforma: "YouTube / VOD", imagen: "familia-mcpherson.jpg" },
+      { dia: 27, titulo: "Alien: El octavo pasajero", plataforma: "Disney+", imagen: "alien.jpg" },
+      { dia: 28, titulo: "Hokum", plataforma: "Apple TV / VOD", imagen: "hokum.jpg" },
+      { dia: 29, titulo: "La masacre de Texas (Remake Jessica Biel)", plataforma: "Max / Prime Video", imagen: "masacre-texas.jpg" },
+      { dia: 30, titulo: "El Exorcista", plataforma: "Max", imagen: "el-exorcista.jpg" },
+      { dia: 31, titulo: "Halloween (1978)", plataforma: "Prime Video / VOD", imagen: "halloween.jpg" },
+      // BONUS TRACK SECRETO
+      { dia: 32, titulo: "Drácula: Una historia de amor", plataforma: "Prime Video / VOD", imagen: "dracula.jpg", isBonus: true }
     ];
 
-    // CONTROL DE FECHA
+    const criterios = [
+      { id: "suspenso", nombre: "Nivel de suspenso / tensión" },
+      { id: "miedo", nombre: "Nivel de miedo / incomodidad" },
+      { id: "visuales", nombre: "Efectos visuales" },
+      { id: "sonido", nombre: "Efectos de sonido / Soundtrack" },
+      { id: "actuacion", nombre: "Actuación / Personajes" },
+      { id: "sorpresa", nombre: "Nivel de sorpresa / Expectativa" }
+    ];
+
     const hoy = new Date();
     const mes = hoy.getMonth(); // 9 = Octubre (0-indexado)
-    const dia = hoy.getDate();  // 1 al 31
+    const dia = hoy.getDate();
 
     const esOctubre = (mes === 9);
     const esAntesDeOctubre = (mes < 9);
@@ -406,84 +503,232 @@
     if (esAntesDeOctubre) {
       dateLabel.innerText = "📅 Esperando Octubre...";
       document.getElementById("pre-october-view").style.display = "block";
-      document.getElementById("history-list").innerHTML = `<li style="color: #666; font-size: 0.9rem;">El calendario aún no ha comenzado.</li>`;
+      document.getElementById("history-list").innerHTML = `<li style="color: #666; font-size: 0.9rem;">El calendario aún no comienza.</li>`;
     } else {
-      // Estamos en Octubre (o después)
-      const diaActualClampeado = esOctubre ? dia : 31;
-      dateLabel.innerText = `📅 Hoy: Día ${diaActualClampeado} de Octubre`;
+      let diaActual = dia;
+      if (!esOctubre && mes > 9) diaActual = 32;
 
-      const peliHoy = calendarioMaestro[diaActualClampeado - 1];
-      const claveRevelado = `revelado_dia_${diaActualClampeado}`;
+      const peliHoy = calendarioMaestro[diaActual - 1] || calendarioMaestro[0];
+
+      if (peliHoy.isBonus) {
+        dateLabel.innerText = "🖤 BONUS TRACK FINAL";
+        dateLabel.className = "badge-today is-bonus";
+        document.getElementById("main-card").className = "card-today is-bonus";
+        document.getElementById("app-title").innerText = "🖤 Bonus Track: Drácula";
+      } else {
+        dateLabel.innerText = `📅 Hoy: Día ${diaActual} de Octubre`;
+      }
+
+      const claveRevelado = `revelado_dia_${diaActual}`;
 
       if (localStorage.getItem(claveRevelado) === "true") {
-        mostrarPelicula(peliHoy, diaActualClampeado);
+        mostrarPelicula(peliHoy, diaActual);
       } else {
         document.getElementById("unrevealed-view").style.display = "block";
       }
 
       window.revelarPelicula = function() {
         localStorage.setItem(claveRevelado, "true");
-        mostrarPelicula(peliHoy, diaActualClampeado);
+        mostrarPelicula(peliHoy, diaActual);
       };
 
-      // Cargar historial de días anteriores
-      cargarHistorial(diaActualClampeado);
+      cargarHistorial(diaActual);
     }
 
     function mostrarPelicula(peli, diaNum) {
       document.getElementById("unrevealed-view").style.display = "none";
-      const view = document.getElementById("revealed-view");
-      view.style.display = "block";
+      document.getElementById("revealed-view").style.display = "block";
 
       const poster = document.getElementById("today-poster");
       const fallback = document.getElementById("today-fallback");
 
-      if (peli.imagen && peli.imagen.trim() !== "") {
-        poster.style.display = "block";
-        fallback.style.display = "none";
-        poster.src = peli.imagen;
-        poster.onerror = () => {
-          poster.style.display = "none";
-          fallback.style.display = "flex";
-          document.getElementById("fallback-title").innerText = peli.titulo;
-        };
-      } else {
+      poster.style.display = "block";
+      fallback.style.display = "none";
+      poster.src = peli.imagen;
+      poster.onerror = () => {
         poster.style.display = "none";
         fallback.style.display = "flex";
         document.getElementById("fallback-title").innerText = peli.titulo;
-      }
+      };
 
       document.getElementById("today-title").innerText = peli.titulo;
       document.getElementById("today-platform").innerText = peli.plataforma;
 
-      // Cargar rating previo de hoy si existe
-      actualizarEstrellasHoy(diaNum);
+      renderSeccionEvaluacion(diaNum, peli.titulo);
     }
 
-    // GESTIÓN DE RATINGS (CALABAZAS)
-    function guardarRating(puntos) {
-      const diaNum = esOctubre ? dia : 31;
-      localStorage.setItem(`rating_dia_${diaNum}`, puntos);
-      actualizarEstrellasHoy(diaNum);
-      cargarHistorial(diaNum);
+    function renderSeccionEvaluacion(diaNum, tituloPeli) {
+      const container = document.getElementById("eval-section");
+      const guardado = localStorage.getItem(`eval_dia_${diaNum}`);
+
+      if (guardado) {
+        const data = JSON.parse(guardado);
+        container.innerHTML = `
+          <div class="locked-card">
+            <span class="locked-badge">🔒 Calificación Sellada</span>
+            <div style="font-size: 0.85rem; color: #8e92a0; margin-bottom: 8px;">
+              Evaluado por: <strong style="color: #fff;">${data.nombre || "Anónimo"}</strong> · 
+              <span style="color: #ffd285;">${data.tipoVista === "nueva" ? "🆕 Primera vez" : "🔁 Ya la había visto"}</span>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; margin: 12px 0;">
+              <div>Suspenso: <strong>${data.valores.suspenso} 🎃</strong></div>
+              <div>Miedo: <strong>${data.valores.miedo} 🎃</strong></div>
+              <div>Visuales: <strong>${data.valores.visuales} 🎃</strong></div>
+              <div>Sonido: <strong>${data.valores.sonido} 🎃</strong></div>
+              <div>Actuación: <strong>${data.valores.actuacion} 🎃</strong></div>
+              <div>Sorpresa: <strong>${data.valores.sorpresa} 🎃</strong></div>
+            </div>
+
+            <div class="summary-box" style="margin-top: 10px; padding: 10px;">
+              <div class="score-number" style="font-size: 2rem;">${data.promedio} <span style="font-size: 1rem;">/ 10.0</span></div>
+              <div class="score-label">Promedio Final Calabazas</div>
+            </div>
+
+            ${data.resena ? `<div style="margin-top: 12px; font-size: 0.88rem; font-style: italic; color: #ddd; background: #161822; padding: 10px; border-radius: 6px;">"${data.resena}"</div>` : ""}
+
+            <button class="btn-share" onclick="compartirWhatsApp(${diaNum})">
+              📲 Copiar ficha para compartir
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      let criteriosHtml = criterios.map(c => `
+        <div class="criterion-row">
+          <div class="criterion-label">
+            <span>${c.nombre}</span>
+            <span class="criterion-val" id="val-${c.id}">5.0 / 10 🎃</span>
+          </div>
+          <div class="rating-control">
+            <input type="range" class="pumpkin-range" id="range-${c.id}" min="0.0" max="10.0" step="0.5" value="5.0" oninput="actualizarCriterio('${c.id}')">
+          </div>
+        </div>
+      `).join("");
+
+      container.innerHTML = `
+        <div class="evaluation-container">
+          <div class="eval-header">
+            <span>📝 Asignar Puntuación</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Escala: 0 a 10 🎃</span>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">¿Es la primera vez que la ves?</label>
+            <div class="view-type-group">
+              <button type="button" class="btn-choice active" id="btn-nueva" onclick="setTipoVista('nueva')">🆕 Primera vez</button>
+              <button type="button" class="btn-choice" id="btn-repetida" onclick="setTipoVista('repetida')">🔁 Ya la vi antes</button>
+            </div>
+          </div>
+
+          ${criteriosHtml}
+
+          <div class="form-group">
+            <label>Tu nombre:</label>
+            <input type="text" id="reviewer-name" class="form-input" placeholder="Tu nombre" />
+          </div>
+
+          <div class="form-group">
+            <label>Tu reseña u opinión personal:</label>
+            <textarea id="reviewer-text" class="form-textarea" placeholder="Escribe aquí tu opinión sobre la película..."></textarea>
+          </div>
+
+          <div class="summary-box">
+            <div class="score-number" id="live-average">5.0</div>
+            <div class="score-label">Promedio General (Sobre 10 🎃)</div>
+          </div>
+
+          <button class="btn-submit" onclick="guardarEvaluacionDefinitiva(${diaNum}, '${tituloPeli}')">
+            🔒 Guardar calificación definitiva
+          </button>
+        </div>
+      `;
+
+      window.currentTipoVista = "nueva";
+      calcularPromedioEnVivo();
     }
 
-    function actualizarEstrellasHoy(diaNum) {
-      const guardado = parseInt(localStorage.getItem(`rating_dia_${diaNum}`)) || 0;
-      const estrellas = document.querySelectorAll("#today-stars .pumpkin-star");
-      estrellas.forEach((star, index) => {
-        if (index < guardado) {
-          star.classList.add("active");
-        } else {
-          star.classList.remove("active");
-        }
+    window.setTipoVista = function(tipo) {
+      window.currentTipoVista = tipo;
+      document.getElementById("btn-nueva").classList.toggle("active", tipo === "nueva");
+      document.getElementById("btn-repetida").classList.toggle("active", tipo === "repetida");
+    };
+
+    window.actualizarCriterio = function(id) {
+      const val = parseFloat(document.getElementById(`range-${id}`).value);
+      document.getElementById(`val-${id}`).innerText = `${val.toFixed(1)} / 10 🎃`;
+      calcularPromedioEnVivo();
+    };
+
+    function calcularPromedioEnVivo() {
+      let suma = 0;
+      criterios.forEach(c => {
+        const input = document.getElementById(`range-${c.id}`);
+        if (input) suma += parseFloat(input.value);
       });
+      const promedio = (suma / criterios.length).toFixed(1);
+      const avgEl = document.getElementById("live-average");
+      if (avgEl) avgEl.innerText = promedio;
+      return promedio;
     }
 
-    function guardarRatingHistorial(diaHist, puntos) {
-      localStorage.setItem(`rating_dia_${diaHist}`, puntos);
-      cargarHistorial(esOctubre ? dia : 31);
-    }
+    window.guardarEvaluacionDefinitiva = function(diaNum, tituloPeli) {
+      const confirmacion = confirm("⚠️ ¿Confirmas esta evaluación? Quedará SELLADA y no se podrá editar.");
+      if (!confirmacion) return;
+
+      const valores = {};
+      criterios.forEach(c => {
+        valores[c.id] = parseFloat(document.getElementById(`range-${c.id}`).value);
+      });
+
+      const nombre = document.getElementById("reviewer-name").value.trim() || "Anónimo";
+      const resena = document.getElementById("reviewer-text").value.trim();
+      const promedio = calcularPromedioEnVivo();
+
+      const evaluacion = {
+        dia: diaNum,
+        titulo: tituloPeli,
+        nombre: nombre,
+        tipoVista: window.currentTipoVista || "nueva",
+        valores: valores,
+        promedio: promedio,
+        resena: resena,
+        fecha: new Date().toISOString()
+      };
+
+      localStorage.setItem(`eval_dia_${diaNum}`, JSON.stringify(evaluacion));
+      renderSeccionEvaluacion(diaNum, tituloPeli);
+      cargarHistorial(diaNum);
+    };
+
+    window.compartirWhatsApp = function(diaNum) {
+      const data = JSON.parse(localStorage.getItem(`eval_dia_${diaNum}`));
+      if (!data) return;
+
+      const texto = `🎃 *Reseña Día ${diaNum}: ${data.titulo}* 🎬\n` +
+                    `👤 Evaluador: ${data.nombre} (${data.tipoVista === "nueva" ? "🆕 Primera vez" : "🔁 Repetida"})\n\n` +
+                    `📊 *Puntajes (0 a 10):*\n` +
+                    `• Suspenso/Tensión: ${data.valores.suspenso}/10 🎃\n` +
+                    `• Miedo/Incomodidad: ${data.valores.miedo}/10 🎃\n` +
+                    `• Efectos Visuales: ${data.valores.visuales}/10 🎃\n` +
+                    `• Sonido/Música: ${data.valores.sonido}/10 🎃\n` +
+                    `• Actuación: ${data.valores.actuacion}/10 🎃\n` +
+                    `• Sorpresa: ${data.valores.sorpresa}/10 🎃\n\n` +
+                    `⭐ *Promedio Final: ${data.promedio} / 10.0* 🎃\n` +
+                    (data.resena ? `💬 "${data.resena}"` : "");
+
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("📋 ¡Resumen copiado! Ya puedes pegarlo por WhatsApp.");
+      }).catch(() => {
+        prompt("Copia tu reseña aquí:", texto);
+      });
+    };
+
+    window.toggleDetallesHistorial = function(d) {
+      const el = document.getElementById(`review-box-${d}`);
+      if (el) el.style.display = (el.style.display === "block") ? "none" : "block";
+    };
 
     function cargarHistorial(hastaDia) {
       const historyList = document.getElementById("history-list");
@@ -494,35 +739,45 @@
         return;
       }
 
-      for (let d = 1; d < hastaDia; d++) {
-        const itemPeli = calendarioMaestro[d - 1];
-        const rating = parseInt(localStorage.getItem(`rating_dia_${d}`)) || 0;
+      const limite = Math.min(hastaDia, 32);
 
-        let ratingHtml = "";
-        for (let i = 1; i <= 5; i++) {
-          const activeClass = i <= rating ? "active" : "";
-          ratingHtml += `<span class="pumpkin-star ${activeClass}" onclick="guardarRatingHistorial(${d}, ${i})">🎃</span>`;
-        }
+      for (let d = 1; d < limite; d++) {
+        const itemPeli = calendarioMaestro[d - 1];
+        const evalGuardada = localStorage.getItem(`eval_dia_${d}`);
+        const data = evalGuardada ? JSON.parse(evalGuardada) : null;
 
         const li = document.createElement("li");
         li.className = "history-item";
 
-        const tieneImg = itemPeli.imagen && itemPeli.imagen.trim() !== "";
         li.innerHTML = `
-          <span class="history-day">Día ${d}</span>
-          <div class="history-thumb-wrapper">
-            ${tieneImg 
-              ? `<img src="${itemPeli.imagen}" class="history-thumb-img" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='🎬'" />` 
-              : `🎬`
-            }
-          </div>
-          <div class="history-content">
-            <span class="history-title">${itemPeli.titulo}</span>
-            <div class="history-meta">
-              <span class="history-platform">${itemPeli.plataforma}</span>
-              <div class="mini-pumpkins">${ratingHtml}</div>
+          <div class="history-top">
+            <span class="history-day" style="${itemPeli.isBonus ? 'color: var(--bonus);' : ''}">
+              ${itemPeli.isBonus ? '🖤 Bonus' : 'Día ' + d}
+            </span>
+            <div class="history-thumb-wrapper">
+              <img src="${itemPeli.imagen}" class="history-thumb-img" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='🎬'" />
+            </div>
+            <div class="history-content">
+              <div class="history-title">${itemPeli.titulo}</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+                <span>📺 ${itemPeli.plataforma}</span>
+                ${data ? ` · <strong style="color: var(--accent);">${data.promedio} / 10 🎃</strong>` : ` · <span style="color: #777;">Sin calificar</span>`}
+              </div>
+              ${data ? `<button class="history-details-toggle" onclick="toggleDetallesHistorial(${d})">Ver reseña & notas</button>` : ""}
             </div>
           </div>
+
+          ${data ? `
+            <div class="history-review-box" id="review-box-${d}">
+              <div style="font-size: 0.8rem; margin-bottom: 6px;">
+                Por: <strong>${data.nombre}</strong> (${data.tipoVista === "nueva" ? "🆕 Nueva" : "🔁 Repetida"})
+              </div>
+              <div style="font-size: 0.75rem; color: #9aa; margin-bottom: 8px;">
+                Suspenso: ${data.valores.suspenso} \vert{} Miedo:${data.valores.miedo} | Visuales: ${data.valores.visuales} \vert{} Sonido:${data.valores.sonido} | Actuación: ${data.valores.actuacion} \vert{} Sorpresa:${data.valores.sorpresa}
+              </div>
+              ${data.resena ? `<div style="font-style: italic; color: #eee;">"${data.resena}"</div>` : ""}
+            </div>
+          ` : ""}
         `;
         historyList.appendChild(li);
       }
