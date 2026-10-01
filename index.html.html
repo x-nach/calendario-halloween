@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="no-referrer">
-  <title>Spooky Season: 31 Noches 🎃</title>
+  <title>Te Amo Mi Guaguita 🖤</title>
   <style>
     :root {
       --bg: #0a0b0e;
@@ -17,6 +17,7 @@
       --border: #232736;
       --gold: #ffb830;
       --bonus: #e056fd;
+      --partner: #38bdf8;
     }
     * { box-sizing: border-box; }
     body {
@@ -292,13 +293,25 @@
       gap: 6px;
     }
 
+    /* TARJETAS DE EVALUACIONES SELLADAS */
+    .reviews-display {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
     .locked-card {
       background: #11131a;
       border: 1px solid #2b3040;
       border-radius: 12px;
       padding: 16px;
-      margin-top: 16px;
       text-align: left;
+    }
+    .locked-card.is-me {
+      border-color: rgba(255, 107, 26, 0.4);
+    }
+    .locked-card.is-partner {
+      border-color: rgba(56, 189, 248, 0.4);
     }
     .locked-badge {
       display: inline-block;
@@ -308,6 +321,10 @@
       border-radius: 4px;
       font-size: 0.75rem;
       margin-bottom: 8px;
+    }
+    .locked-badge.is-partner {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--partner);
     }
 
     /* HISTORIAL */
@@ -388,12 +405,22 @@
       font-size: 0.85rem;
       color: #cfd3dc;
     }
+    .review-bubble {
+      background: #141721;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+      border-left: 3px solid var(--accent);
+    }
+    .review-bubble.partner {
+      border-left-color: var(--partner);
+    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1 id="app-title">🎃 Spooky Season: 31 Noches</h1>
+    <h1 id="app-title">🎃 Maratón de Terror 👻</h1>
     <div class="subtitle" id="app-subtitle">Una película diaria sin repetir · Octubre</div>
 
     <!-- TARJETA DEL DÍA ACTUAL -->
@@ -445,7 +472,10 @@
   </div>
 
   <script>
-    // CALENDARIO MAESTRO SECRETO (NO MIRAR PARA EVITAR SPOILERS)
+    // URL DE FIREBASE CONECTADA DIRECTAMENTE
+    const FIREBASE_DB_URL = "https://halloween-cine-default-rtdb.firebaseio.com"; 
+
+    // CALENDARIO MAESTRO SECRETO
     const calendarioMaestro = [
       { dia: 1, titulo: "La autopsia de Jane Doe", plataforma: "Prime Video / Max", imagen: "jane-doe.jpg" },
       { dia: 2, titulo: "Coraline y la puerta secreta", plataforma: "Prime Video", imagen: "coraline.jpg" },
@@ -478,7 +508,6 @@
       { dia: 29, titulo: "La masacre de Texas (Remake Jessica Biel)", plataforma: "Max / Prime Video", imagen: "masacre-texas.jpg" },
       { dia: 30, titulo: "El Exorcista", plataforma: "Max", imagen: "el-exorcista.jpg" },
       { dia: 31, titulo: "Halloween (1978)", plataforma: "Prime Video / VOD", imagen: "halloween.jpg" },
-      // BONUS TRACK SECRETO
       { dia: 32, titulo: "Drácula: Una historia de amor", plataforma: "Prime Video / VOD", imagen: "dracula.jpg", isBonus: true }
     ];
 
@@ -492,13 +521,24 @@
     ];
 
     const hoy = new Date();
-    const mes = hoy.getMonth(); // 9 = Octubre (0-indexado)
+    const mes = hoy.getMonth(); // 9 = Octubre
     const dia = hoy.getDate();
 
     const esOctubre = (mes === 9);
     const esAntesDeOctubre = (mes < 9);
 
     const dateLabel = document.getElementById("date-label");
+
+    // Identificador único de dispositivo para diferenciar reseñas
+    function obtenerMiId() {
+      let id = localStorage.getItem("spooky_user_id");
+      if (!id) {
+        id = "user_" + Math.random().toString(36).substring(2, 9);
+        localStorage.setItem("spooky_user_id", id);
+      }
+      return id;
+    }
+    const MI_USER_ID = obtenerMiId();
 
     if (esAntesDeOctubre) {
       dateLabel.innerText = "📅 Esperando Octubre...";
@@ -557,96 +597,137 @@
       renderSeccionEvaluacion(diaNum, peli.titulo);
     }
 
-    function renderSeccionEvaluacion(diaNum, tituloPeli) {
+    // OBTENER RESEÑAS DESDE FIREBASE O LOCALSTORAGE
+    async function obtenerResenasDelDia(diaNum) {
+      let resenas = {};
+      try {
+        const resp = await fetch(`${FIREBASE_DB_URL}/evaluaciones/dia_${diaNum}.json`);
+        if (resp.ok) {
+          const cloudData = await resp.json();
+          if (cloudData) resenas = cloudData;
+        }
+      } catch (e) {
+        console.warn("Firebase no accesible, usando local.");
+      }
+
+      // Mezclar con local por si no hay internet
+      const local = localStorage.getItem(`eval_dia_${diaNum}`);
+      if (local) {
+        const parsed = JSON.parse(local);
+        resenas[MI_USER_ID] = parsed;
+      }
+      return resenas;
+    }
+
+    // RENDERIZADO DE EVALUACIÓN
+    async function renderSeccionEvaluacion(diaNum, tituloPeli) {
       const container = document.getElementById("eval-section");
-      const guardado = localStorage.getItem(`eval_dia_${diaNum}`);
+      container.innerHTML = `<div style="color: #888; font-size: 0.85rem; padding: 20px;">Cargando opiniones...</div>`;
 
-      if (guardado) {
-        const data = JSON.parse(guardado);
-        container.innerHTML = `
-          <div class="locked-card">
-            <span class="locked-badge">🔒 Calificación Sellada</span>
-            <div style="font-size: 0.85rem; color: #8e92a0; margin-bottom: 8px;">
-              Evaluado por: <strong style="color: #fff;">${data.nombre || "Anónimo"}</strong> · 
-              <span style="color: #ffd285;">${data.tipoVista === "nueva" ? "🆕 Primera vez" : "🔁 Ya la había visto"}</span>
+      const todasLasResenas = await obtenerResenasDelDia(diaNum);
+      const miEvaluacion = todasLasResenas[MI_USER_ID];
+
+      // Formulario si yo aún no he calificado
+      let htmlFormulario = "";
+      if (!miEvaluacion) {
+        const nombreGuardado = localStorage.getItem("spooky_my_name") || "";
+        let criteriosHtml = criterios.map(c => `
+          <div class="criterion-row">
+            <div class="criterion-label">
+              <span>${c.nombre}</span>
+              <span class="criterion-val" id="val-${c.id}">5.0 / 10 🎃</span>
             </div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; margin: 12px 0;">
-              <div>Suspenso: <strong>${data.valores.suspenso} 🎃</strong></div>
-              <div>Miedo: <strong>${data.valores.miedo} 🎃</strong></div>
-              <div>Visuales: <strong>${data.valores.visuales} 🎃</strong></div>
-              <div>Sonido: <strong>${data.valores.sonido} 🎃</strong></div>
-              <div>Actuación: <strong>${data.valores.actuacion} 🎃</strong></div>
-              <div>Sorpresa: <strong>${data.valores.sorpresa} 🎃</strong></div>
+            <div class="rating-control">
+              <input type="range" class="pumpkin-range" id="range-${c.id}" min="0.0" max="10.0" step="0.5" value="5.0" oninput="actualizarCriterio('${c.id}')">
+            </div>
+          </div>
+        `).join("");
+
+        htmlFormulario = `
+          <div class="evaluation-container">
+            <div class="eval-header">
+              <span>📝 Tu Evaluación</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Escala: 0 a 10 🎃</span>
             </div>
 
-            <div class="summary-box" style="margin-top: 10px; padding: 10px;">
-              <div class="score-number" style="font-size: 2rem;">${data.promedio} <span style="font-size: 1rem;">/ 10.0</span></div>
-              <div class="score-label">Promedio Final Calabazas</div>
+            <div style="margin-bottom: 16px;">
+              <label style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">¿Es la primera vez que la ves?</label>
+              <div class="view-type-group">
+                <button type="button" class="btn-choice active" id="btn-nueva" onclick="setTipoVista('nueva')">🆕 Primera vez</button>
+                <button type="button" class="btn-choice" id="btn-repetida" onclick="setTipoVista('repetida')">🔁 Ya la vi antes</button>
+              </div>
             </div>
 
-            ${data.resena ? `<div style="margin-top: 12px; font-size: 0.88rem; font-style: italic; color: #ddd; background: #161822; padding: 10px; border-radius: 6px;">"${data.resena}"</div>` : ""}
+            ${criteriosHtml}
 
-            <button class="btn-share" onclick="compartirWhatsApp(${diaNum})">
-              📲 Copiar ficha para compartir
+            <div class="form-group">
+              <label>Tu nombre:</label>
+              <input type="text" id="reviewer-name" class="form-input" placeholder="Tu nombre" value="${nombreGuardado}" />
+            </div>
+
+            <div class="form-group">
+              <label>Tu reseña u opinión personal:</label>
+              <textarea id="reviewer-text" class="form-textarea" placeholder="Escribe aquí tu opinión sobre la película..."></textarea>
+            </div>
+
+            <div class="summary-box">
+              <div class="score-number" id="live-average">5.0</div>
+              <div class="score-label">Promedio General (Sobre 10 🎃)</div>
+            </div>
+
+            <button class="btn-submit" onclick="guardarEvaluacionDefinitiva(${diaNum}, '${tituloPeli}')">
+              🔒 Guardar mi calificación definitiva
             </button>
           </div>
         `;
-        return;
       }
 
-      let criteriosHtml = criterios.map(c => `
-        <div class="criterion-row">
-          <div class="criterion-label">
-            <span>${c.nombre}</span>
-            <span class="criterion-val" id="val-${c.id}">5.0 / 10 🎃</span>
-          </div>
-          <div class="rating-control">
-            <input type="range" class="pumpkin-range" id="range-${c.id}" min="0.0" max="10.0" step="0.5" value="5.0" oninput="actualizarCriterio('${c.id}')">
-          </div>
-        </div>
-      `).join("");
+      // Renderizar tarjetas de las evaluaciones ya emitidas (la mía y la del compañero)
+      let htmlResenas = "";
+      const keys = Object.keys(todasLasResenas);
 
-      container.innerHTML = `
-        <div class="evaluation-container">
-          <div class="eval-header">
-            <span>📝 Asignar Puntuación</span>
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Escala: 0 a 10 🎃</span>
-          </div>
+      if (keys.length > 0) {
+        htmlResenas = `<div class="reviews-display">`;
+        keys.forEach(k => {
+          const data = todasLasResenas[k];
+          const esMia = (k === MI_USER_ID);
 
-          <div style="margin-bottom: 16px;">
-            <label style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">¿Es la primera vez que la ves?</label>
-            <div class="view-type-group">
-              <button type="button" class="btn-choice active" id="btn-nueva" onclick="setTipoVista('nueva')">🆕 Primera vez</button>
-              <button type="button" class="btn-choice" id="btn-repetida" onclick="setTipoVista('repetida')">🔁 Ya la vi antes</button>
+          htmlResenas += `
+            <div class="locked-card ${esMia ? 'is-me' : 'is-partner'}">
+              <span class="locked-badge ${esMia ? '' : 'is-partner'}">
+                ${esMia ? '🔒 Tu calificación sellada' : '💬 Opinión de ' + data.nombre}
+              </span>
+              <div style="font-size: 0.85rem; color: #8e92a0; margin-bottom: 8px;">
+                Evaluado por: <strong style="color: #fff;">${data.nombre}</strong> · 
+                <span style="color: #ffd285;">${data.tipoVista === "nueva" ? "🆕 Primera vez" : "🔁 Ya la había visto"}</span>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; margin: 12px 0;">
+                <div>Suspenso: <strong>${data.valores.suspenso} 🎃</strong></div>
+                <div>Miedo: <strong>${data.valores.miedo} 🎃</strong></div>
+                <div>Visuales: <strong>${data.valores.visuales} 🎃</strong></div>
+                <div>Sonido: <strong>${data.valores.sonido} 🎃</strong></div>
+                <div>Actuación: <strong>${data.valores.actuacion} 🎃</strong></div>
+                <div>Sorpresa: <strong>${data.valores.sorpresa} 🎃</strong></div>
+              </div>
+
+              <div class="summary-box" style="margin-top: 10px; padding: 10px;">
+                <div class="score-number" style="font-size: 1.9rem;">${data.promedio} <span style="font-size: 0.95rem;">/ 10.0</span></div>
+                <div class="score-label">Promedio Final</div>
+              </div>
+
+              ${data.resena ? `<div style="margin-top: 12px; font-size: 0.88rem; font-style: italic; color: #ddd; background: #161822; padding: 10px; border-radius: 6px;">"${data.resena}"</div>` : ""}
+
+              ${esMia ? `<button class="btn-share" onclick="compartirWhatsApp(${diaNum})">📲 Copiar ficha para compartir</button>` : ""}
             </div>
-          </div>
+          `;
+        });
+        htmlResenas += `</div>`;
+      }
 
-          ${criteriosHtml}
-
-          <div class="form-group">
-            <label>Tu nombre:</label>
-            <input type="text" id="reviewer-name" class="form-input" placeholder="Tu nombre" />
-          </div>
-
-          <div class="form-group">
-            <label>Tu reseña u opinión personal:</label>
-            <textarea id="reviewer-text" class="form-textarea" placeholder="Escribe aquí tu opinión sobre la película..."></textarea>
-          </div>
-
-          <div class="summary-box">
-            <div class="score-number" id="live-average">5.0</div>
-            <div class="score-label">Promedio General (Sobre 10 🎃)</div>
-          </div>
-
-          <button class="btn-submit" onclick="guardarEvaluacionDefinitiva(${diaNum}, '${tituloPeli}')">
-            🔒 Guardar calificación definitiva
-          </button>
-        </div>
-      `;
-
+      container.innerHTML = htmlFormulario + htmlResenas;
       window.currentTipoVista = "nueva";
-      calcularPromedioEnVivo();
+      if (!miEvaluacion) calcularPromedioEnVivo();
     }
 
     window.setTipoVista = function(tipo) {
@@ -673,8 +754,8 @@
       return promedio;
     }
 
-    window.guardarEvaluacionDefinitiva = function(diaNum, tituloPeli) {
-      const confirmacion = confirm("⚠️ ¿Confirmas esta evaluación? Quedará SELLADA y no se podrá editar.");
+    window.guardarEvaluacionDefinitiva = async function(diaNum, tituloPeli) {
+      const confirmacion = confirm("⚠️ ¿Confirmas esta evaluación? Quedará SELLADA y se sincronizará con tu acompañante.");
       if (!confirmacion) return;
 
       const valores = {};
@@ -682,14 +763,17 @@
         valores[c.id] = parseFloat(document.getElementById(`range-${c.id}`).value);
       });
 
-      const nombre = document.getElementById("reviewer-name").value.trim() || "Anónimo";
+      const nombreInput = document.getElementById("reviewer-name").value.trim() || "Anónimo";
+      localStorage.setItem("spooky_my_name", nombreInput);
+
       const resena = document.getElementById("reviewer-text").value.trim();
       const promedio = calcularPromedioEnVivo();
 
       const evaluacion = {
+        userId: MI_USER_ID,
         dia: diaNum,
         titulo: tituloPeli,
-        nombre: nombre,
+        nombre: nombreInput,
         tipoVista: window.currentTipoVista || "nueva",
         valores: valores,
         promedio: promedio,
@@ -697,7 +781,20 @@
         fecha: new Date().toISOString()
       };
 
+      // Guardar local
       localStorage.setItem(`eval_dia_${diaNum}`, JSON.stringify(evaluacion));
+
+      // Guardar en Firebase en la ruta del día bajo el ID de usuario
+      try {
+        await fetch(`${FIREBASE_DB_URL}/evaluaciones/dia_${diaNum}/${MI_USER_ID}.json`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(evaluacion)
+        });
+      } catch (err) {
+        console.error("Error al sincronizar con Firebase:", err);
+      }
+
       renderSeccionEvaluacion(diaNum, tituloPeli);
       cargarHistorial(diaNum);
     };
@@ -730,7 +827,7 @@
       if (el) el.style.display = (el.style.display === "block") ? "none" : "block";
     };
 
-    function cargarHistorial(hastaDia) {
+    async function cargarHistorial(hastaDia) {
       const historyList = document.getElementById("history-list");
       historyList.innerHTML = "";
 
@@ -741,10 +838,44 @@
 
       const limite = Math.min(hastaDia, 32);
 
+      // Traer todas las evaluaciones de la nube para el historial
+      let todasEvaluacionesNube = {};
+      try {
+        const resp = await fetch(`${FIREBASE_DB_URL}/evaluaciones.json`);
+        if (resp.ok) todasEvaluacionesNube = await resp.json() || {};
+      } catch (e) {}
+
       for (let d = 1; d < limite; d++) {
         const itemPeli = calendarioMaestro[d - 1];
-        const evalGuardada = localStorage.getItem(`eval_dia_${d}`);
-        const data = evalGuardada ? JSON.parse(evalGuardada) : null;
+        const resenasDia = todasEvaluacionesNube[`dia_${d}`] || {};
+        
+        // Agregar también local si existe
+        const local = localStorage.getItem(`eval_dia_${d}`);
+        if (local) resenasDia[MI_USER_ID] = JSON.parse(local);
+
+        const keys = Object.keys(resenasDia);
+
+        let contenidoResenas = "";
+        let resumenPromedios = "";
+
+        if (keys.length > 0) {
+          keys.forEach(k => {
+            const data = resenasDia[k];
+            const esMia = (k === MI_USER_ID);
+            resumenPromedios += `<span style="color: ${esMia ? 'var(--accent)' : 'var(--partner)'}; font-weight: bold; margin-left: 6px;">${data.nombre}: ${data.promedio} 🎃</span>`;
+            contenidoResenas += `
+              <div class="review-bubble ${esMia ? '' : 'partner'}">
+                <div style="font-size: 0.8rem; margin-bottom: 4px;">
+                  <strong>${data.nombre}</strong> (${data.tipoVista === "nueva" ? "🆕 Nueva" : "🔁 Repetida"}) · <span style="color: var(--gold); font-weight: bold;">${data.promedio}/10</span>
+                </div>
+                <div style="font-size: 0.75rem; color: #8e92a0; margin-bottom: 6px;">
+                  Suspenso: ${data.valores.suspenso} | Miedo: ${data.valores.miedo} | Visuales: ${data.valores.visuales} | Sonido: ${data.valores.sonido} | Actuación: ${data.valores.actuacion} | Sorpresa: ${data.valores.sorpresa}
+                </div>
+                ${data.resena ? `<div style="font-style: italic; color: #eee;">"${data.resena}"</div>` : ""}
+              </div>
+            `;
+          });
+        }
 
         const li = document.createElement("li");
         li.className = "history-item";
@@ -761,21 +892,15 @@
               <div class="history-title">${itemPeli.titulo}</div>
               <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
                 <span>📺 ${itemPeli.plataforma}</span>
-                ${data ? ` · <strong style="color: var(--accent);">${data.promedio} / 10 🎃</strong>` : ` · <span style="color: #777;">Sin calificar</span>`}
+                ${resumenPromedios || ` · <span style="color: #777;">Sin calificar</span>`}
               </div>
-              ${data ? `<button class="history-details-toggle" onclick="toggleDetallesHistorial(${d})">Ver reseña & notas</button>` : ""}
+              ${keys.length > 0 ? `<button class="history-details-toggle" onclick="toggleDetallesHistorial(${d})">Ver notas de ambos</button>` : ""}
             </div>
           </div>
 
-          ${data ? `
+          ${keys.length > 0 ? `
             <div class="history-review-box" id="review-box-${d}">
-              <div style="font-size: 0.8rem; margin-bottom: 6px;">
-                Por: <strong>${data.nombre}</strong> (${data.tipoVista === "nueva" ? "🆕 Nueva" : "🔁 Repetida"})
-              </div>
-              <div style="font-size: 0.75rem; color: #9aa; margin-bottom: 8px;">
-                Suspenso: ${data.valores.suspenso} \vert{} Miedo:${data.valores.miedo} | Visuales: ${data.valores.visuales} \vert{} Sonido:${data.valores.sonido} | Actuación: ${data.valores.actuacion} \vert{} Sorpresa:${data.valores.sorpresa}
-              </div>
-              ${data.resena ? `<div style="font-style: italic; color: #eee;">"${data.resena}"</div>` : ""}
+              ${contenidoResenas}
             </div>
           ` : ""}
         `;
