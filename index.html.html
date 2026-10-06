@@ -434,7 +434,7 @@
 
     <!-- TARJETA DEL DÍA ACTUAL -->
     <div class="card-today" id="main-card">
-      <div id="date-label" class="badge-today">Cargando fecha...</div>
+      <div id="date-label" class="badge-today">📅 Hoy: Cargando...</div>
       
       <!-- Antes de Octubre -->
       <div id="pre-october-view" style="display: none;">
@@ -531,50 +531,69 @@
       { id: "sorpresa", nombre: "Nivel de sorpresa / Expectativa" }
     ];
 
-    const hoy = new Date();
-    const mes = hoy.getMonth(); // 9 = Octubre
-    const dia = hoy.getDate();
-
-    const esOctubre = (mes === 9);
-    const esAntesDeOctubre = (mes < 9);
-
-    const dateLabel = document.getElementById("date-label");
-
     function obtenerMiId() {
-      let id = localStorage.getItem("spooky_user_id");
-      if (!id) {
-        id = "user_" + Math.random().toString(36).substring(2, 9);
-        localStorage.setItem("spooky_user_id", id);
+      try {
+        let id = localStorage.getItem("spooky_user_id");
+        if (!id) {
+          id = "user_" + Math.random().toString(36).substring(2, 9);
+          localStorage.setItem("spooky_user_id", id);
+        }
+        return id;
+      } catch (e) {
+        return "user_guest";
       }
-      return id;
     }
     const MI_USER_ID = obtenerMiId();
+    window.currentTipoVista = "nueva";
 
-    if (esAntesDeOctubre) {
-      dateLabel.innerText = "📅 Esperando Octubre...";
-      document.getElementById("pre-october-view").style.display = "block";
-      document.getElementById("history-list").innerHTML = `<li style="color: #666; font-size: 0.9rem;">El calendario aún no comienza.</li>`;
-    } else {
+    // INICIALIZACIÓN INMEDIATA
+    document.addEventListener("DOMContentLoaded", () => {
+      inicializarApp();
+    });
+
+    function inicializarApp() {
+      const hoy = new Date();
+      const mes = hoy.getMonth(); // 9 = Octubre
+      const dia = hoy.getDate();
+
+      const esOctubre = (mes === 9);
+      const esAntesDeOctubre = (mes < 9);
+
+      const dateLabel = document.getElementById("date-label");
+
+      if (esAntesDeOctubre) {
+        if (dateLabel) dateLabel.innerText = "📅 Esperando Octubre...";
+        const preView = document.getElementById("pre-october-view");
+        if (preView) preView.style.display = "block";
+        const hList = document.getElementById("history-list");
+        if (hList) hList.innerHTML = `<li style="color: #666; font-size: 0.9rem;">El calendario aún no comienza.</li>`;
+        return;
+      }
+
       let diaActual = dia;
       if (!esOctubre && mes > 9) diaActual = 32;
 
       const peliHoy = calendarioMaestro[diaActual - 1] || calendarioMaestro[0];
 
-      if (peliHoy.isBonus) {
-        dateLabel.innerText = "🖤 BONUS TRACK FINAL";
-        dateLabel.className = "badge-today is-bonus";
-        document.getElementById("main-card").className = "card-today is-bonus";
-        document.getElementById("app-title").innerText = "🖤 Bonus Track: Drácula";
-      } else {
-        dateLabel.innerText = `📅 Hoy: Día ${diaActual} de Octubre`;
+      if (dateLabel) {
+        if (peliHoy.isBonus) {
+          dateLabel.innerText = "🖤 BONUS TRACK FINAL";
+          dateLabel.className = "badge-today is-bonus";
+          document.getElementById("main-card").className = "card-today is-bonus";
+          document.getElementById("app-title").innerText = "🖤 Bonus Track: Drácula";
+        } else {
+          dateLabel.innerText = `📅 Hoy: Día ${diaActual} de Octubre`;
+        }
       }
 
       const claveRevelado = `revelado_dia_${diaActual}`;
+      const estaRevelado = localStorage.getItem(claveRevelado) === "true";
 
-      if (localStorage.getItem(claveRevelado) === "true") {
+      if (estaRevelado) {
         mostrarPelicula(peliHoy, diaActual);
       } else {
-        document.getElementById("unrevealed-view").style.display = "block";
+        const unrevView = document.getElementById("unrevealed-view");
+        if (unrevView) unrevView.style.display = "block";
       }
 
       window.revelarPelicula = function() {
@@ -582,32 +601,41 @@
         mostrarPelicula(peliHoy, diaActual);
       };
 
-      cargarHistorial(diaActual);
+      setTimeout(() => {
+        cargarHistorial(diaActual);
+      }, 50);
     }
 
     function mostrarPelicula(peli, diaNum) {
-      document.getElementById("unrevealed-view").style.display = "none";
-      document.getElementById("revealed-view").style.display = "block";
+      const unrevView = document.getElementById("unrevealed-view");
+      const revView = document.getElementById("revealed-view");
+      if (unrevView) unrevView.style.display = "none";
+      if (revView) revView.style.display = "block";
 
       const poster = document.getElementById("today-poster");
       const fallback = document.getElementById("today-fallback");
 
-      poster.style.display = "block";
-      fallback.style.display = "none";
-      poster.src = peli.imagen;
-      poster.onerror = () => {
-        poster.style.display = "none";
-        fallback.style.display = "flex";
-        document.getElementById("fallback-title").innerText = peli.titulo;
-      };
+      if (poster && fallback) {
+        poster.style.display = "block";
+        fallback.style.display = "none";
+        poster.src = peli.imagen;
+        poster.onerror = () => {
+          poster.style.display = "none";
+          fallback.style.display = "flex";
+          document.getElementById("fallback-title").innerText = peli.titulo;
+        };
+      }
 
-      document.getElementById("today-title").innerText = peli.titulo;
+      const titleEl = document.getElementById("today-title");
+      if (titleEl) titleEl.innerText = peli.titulo;
       
       const badgePlatform = document.getElementById("today-platform-badge");
-      if (peli.url) {
-        badgePlatform.innerHTML = `📺 Ver en: <strong>${peli.plataforma}</strong> <a href="${peli.url}" target="_blank" rel="noopener noreferrer" class="platform-link">▶ Abrir película</a>`;
-      } else {
-        badgePlatform.innerHTML = `📺 Ver en: <strong>${peli.plataforma}</strong>`;
+      if (badgePlatform) {
+        if (peli.url) {
+          badgePlatform.innerHTML = `📺 Ver en: <strong>${peli.plataforma}</strong> <a href="${peli.url}" target="_blank" rel="noopener noreferrer" class="platform-link">▶ Abrir película</a>`;
+        } else {
+          badgePlatform.innerHTML = `📺 Ver en: <strong>${peli.plataforma}</strong>`;
+        }
       }
 
       renderSeccionEvaluacion(diaNum);
@@ -622,19 +650,22 @@
           if (cloudData) resenas = cloudData;
         }
       } catch (e) {
-        console.warn("Firebase no accesible, usando local.");
+        console.warn("Firebase no accesible, usando datos locales.");
       }
 
       const local = localStorage.getItem(`eval_dia_${diaNum}`);
       if (local) {
-        const parsed = JSON.parse(local);
-        resenas[MI_USER_ID] = parsed;
+        try {
+          resenas[MI_USER_ID] = JSON.parse(local);
+        } catch (e) {}
       }
       return resenas;
     }
 
     async function renderSeccionEvaluacion(diaNum) {
       const container = document.getElementById("eval-section");
+      if (!container) return;
+
       container.innerHTML = `<div style="color: #888; font-size: 0.85rem; padding: 20px;">Cargando nuestras opiniones...</div>`;
 
       const todasLasResenas = await obtenerResenasDelDia(diaNum);
@@ -714,12 +745,234 @@
               </div>
               
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.8rem; margin: 12px 0;">
-                <div>Suspenso: <strong>${data.valores.suspenso} 🎃</strong></div>
-                <div>Miedo: <strong>${data.valores.miedo} 🎃</strong></div>
-                <div>Visuales: <strong>${data.valores.visuales} 🎃</strong></div>
-                <div>Sonido: <strong>${data.valores.sonido} 🎃</strong></div>
-                <div>Actuación: <strong>${data.valores.actuacion} 🎃</strong></div>
-                <div>Sorpresa: <strong>${data.valores.sorpresa} 🎃</strong></div>
+                <div>Suspenso: <strong>${data.valores?.suspenso ?? 5} 🎃</strong></div>
+                <div>Miedo: <strong>${data.valores?.miedo ?? 5} 🎃</strong></div>
+                <div>Visuales: <strong>${data.valores?.visuales ?? 5} 🎃</strong></div>
+                <div>Sonido: <strong>${data.valores?.sonido ?? 5} 🎃</strong></div>
+                <div>Actuación: <strong>${data.valores?.actuacion ?? 5} 🎃</strong></div>
+                <div>Sorpresa: <strong>${data.valores?.sorpresa ?? 5} 🎃</strong></div>
               </div>
 
               <div class="summary-box" style="margin-top: 10px; padding: 10px;">
+                <div class="score-number" style="font-size: 1.9rem;">${data.promedio} <span style="font-size: 0.95rem;">/ 10.0</span></div>
+                <div class="score-label">Promedio Final</div>
+              </div>
+
+              ${data.resena ? `<div style="margin-top: 12px; font-style: italic; color: #ddd; background: #161822; padding: 10px; border-radius: 6px;">"${data.resena}"</div>` : ""}
+
+              ${esMia ? `<button class="btn-share" onclick="compartirWhatsApp(${diaNum})">📲 Copiar ficha para compartir</button>` : ""}
+            </div>
+          `;
+        });
+        htmlResenas += `</div>`;
+      }
+
+      container.innerHTML = htmlFormulario + htmlResenas;
+      if (!miEvaluacion) calcularPromedioEnVivo();
+    }
+
+    window.setTipoVista = function(tipo) {
+      window.currentTipoVista = tipo;
+      const bNueva = document.getElementById("btn-nueva");
+      const bRep = document.getElementById("btn-repetida");
+      if (bNueva) bNueva.classList.toggle("active", tipo === "nueva");
+      if (bRep) bRep.classList.toggle("active", tipo === "repetida");
+    };
+
+    window.actualizarCriterio = function(id) {
+      const el = document.getElementById(`range-${id}`);
+      if (el) {
+        const val = parseFloat(el.value);
+        document.getElementById(`val-${id}`).innerText = `${val.toFixed(1)} / 10 🎃`;
+        calcularPromedioEnVivo();
+      }
+    };
+
+    function calcularPromedioEnVivo() {
+      let suma = 0;
+      let total = 0;
+      criterios.forEach(c => {
+        const input = document.getElementById(`range-${c.id}`);
+        if (input) {
+          suma += parseFloat(input.value);
+          total++;
+        }
+      });
+      const promedio = total > 0 ? (suma / total).toFixed(1) : "5.0";
+      const avgEl = document.getElementById("live-average");
+      if (avgEl) avgEl.innerText = promedio;
+      return promedio;
+    }
+
+    window.guardarEvaluacionDefinitiva = async function(diaNum) {
+      try {
+        const confirmacion = confirm("⚠️ ¿Confirmas esta evaluación? No podrás editarla y se sincronizará con tu Amor 😳.");
+        if (!confirmacion) return;
+
+        const peli = calendarioMaestro[diaNum - 1] || { titulo: `Día ${diaNum}` };
+        const tituloPeli = peli.titulo;
+
+        const valores = {};
+        let suma = 0;
+        criterios.forEach(c => {
+          const el = document.getElementById(`range-${c.id}`);
+          const val = el ? parseFloat(el.value) : 5.0;
+          valores[c.id] = val;
+          suma += val;
+        });
+
+        const promedioFinal = (suma / criterios.length).toFixed(1);
+
+        const inputNombre = document.getElementById("reviewer-name");
+        const inputResena = document.getElementById("reviewer-text");
+
+        const nombreInput = (inputNombre && inputNombre.value.trim()) ? inputNombre.value.trim() : "Anónimo";
+        const resena = inputResena ? inputResena.value.trim() : "";
+
+        localStorage.setItem("spooky_my_name", nombreInput);
+
+        const evaluacion = {
+          userId: MI_USER_ID,
+          dia: diaNum,
+          titulo: tituloPeli,
+          nombre: nombreInput,
+          tipoVista: window.currentTipoVista || "nueva",
+          valores: valores,
+          promedio: promedioFinal,
+          resena: resena,
+          fecha: new Date().toISOString()
+        };
+
+        localStorage.setItem(`eval_dia_${diaNum}`, JSON.stringify(evaluacion));
+
+        if (FIREBASE_DB_URL) {
+          try {
+            await fetch(`${FIREBASE_DB_URL}/evaluaciones/dia_${diaNum}/${MI_USER_ID}.json`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(evaluacion)
+            });
+          } catch (err) {
+            console.warn("Fallo Firebase al guardar:", err);
+          }
+        }
+
+        renderSeccionEvaluacion(diaNum);
+        cargarHistorial(diaNum);
+
+      } catch (err) {
+        alert("Ocurrió un error al guardar: " + err.message);
+      }
+    };
+
+    window.compartirWhatsApp = function(diaNum) {
+      const data = JSON.parse(localStorage.getItem(`eval_dia_${diaNum}`));
+      if (!data) return;
+
+      const texto = `🎃 *Reseña Día ${diaNum}: ${data.titulo}* 🎬\n` +
+                    `👤 Evaluador: ${data.nombre} (${data.tipoVista === "nueva" ? "🆕 Primera vez" : "🔁 Repetida"})\n\n` +
+                    `📊 *Puntajes (0 a 10):*\n` +
+                    `• Suspenso/Tensión: ${data.valores.suspenso}/10 🎃\n` +
+                    `• Miedo/Incomodidad: ${data.valores.miedo}/10 🎃\n` +
+                    `• Efectos Visuales: ${data.valores.visuales}/10 🎃\n` +
+                    `• Sonido/Música: ${data.valores.sonido}/10 🎃\n` +
+                    `• Actuación: ${data.valores.actuacion}/10 🎃\n` +
+                    `• Sorpresa: ${data.valores.sorpresa}/10 🎃\n\n` +
+                    `⭐ *Promedio Final: ${data.promedio} / 10.0* 🎃\n` +
+                    (data.resena ? `💬 "${data.resena}"` : "");
+
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("📋 ¡Resumen copiado! Ya puedes pegarlo por WhatsApp.");
+      }).catch(() => {
+        prompt("Copia tu reseña aquí:", texto);
+      });
+    };
+
+    window.toggleDetallesHistorial = function(d) {
+      const el = document.getElementById(`review-box-${d}`);
+      if (el) el.style.display = (el.style.display === "block") ? "none" : "block";
+    };
+
+    async function cargarHistorial(hastaDia) {
+      const historyList = document.getElementById("history-list");
+      if (!historyList) return;
+      historyList.innerHTML = "";
+
+      if (hastaDia <= 1) {
+        historyList.innerHTML = `<li style="color: #666; font-size: 0.9rem;">No hay días anteriores todavía. ¡Es el primer día!</li>`;
+        return;
+      }
+
+      const limite = Math.min(hastaDia, 32);
+
+      let todasEvaluacionesNube = {};
+      try {
+        const resp = await fetch(`${FIREBASE_DB_URL}/evaluaciones.json`);
+        if (resp.ok) todasEvaluacionesNube = await resp.json() || {};
+      } catch (e) {}
+
+      for (let d = 1; d < limite; d++) {
+        const itemPeli = calendarioMaestro[d - 1];
+        const resenasDia = todasEvaluacionesNube[`dia_${d}`] || {};
+        
+        const local = localStorage.getItem(`eval_dia_${d}`);
+        if (local) {
+          try { resenasDia[MI_USER_ID] = JSON.parse(local); } catch (e) {}
+        }
+
+        const keys = Object.keys(resenasDia);
+        let contenidoResenas = "";
+        let resumenPromedios = "";
+
+        if (keys.length > 0) {
+          keys.forEach(k => {
+            const data = resenasDia[k];
+            const esMia = (k === MI_USER_ID);
+            resumenPromedios += `<span style="color: ${esMia ? 'var(--accent)' : 'var(--partner)'}; font-weight: bold; margin-left: 6px;">${data.nombre || 'Anónimo'}: ${data.promedio || '0'} 🎃</span>`;
+            contenidoResenas += `
+              <div class="review-bubble ${esMia ? '' : 'partner'}">
+                <div style="font-size: 0.8rem; margin-bottom: 4px;">
+                  <strong>${data.nombre || 'Anónimo'}</strong> (${data.tipoVista === "nueva" ? "🆕 Nueva" : "🔁 Repetida"}) · <span style="color: var(--gold); font-weight: bold;">${data.promedio || '0'}/10</span>
+                </div>
+                <div style="font-size: 0.75rem; color: #8e92a0; margin-bottom: 6px;">
+                  Suspenso: ${data.valores?.suspenso ?? 5} | Miedo: ${data.valores?.miedo ?? 5} | Visuales: ${data.valores?.visuales ?? 5} | Sonido: ${data.valores?.sonido ?? 5} | Actuación: ${data.valores?.actuacion ?? 5} | Sorpresa: ${data.valores?.sorpresa ?? 5}
+                </div>
+                ${data.resena ? `<div style="font-style: italic; color: #eee;">"${data.resena}"</div>` : ""}
+              </div>
+            `;
+          });
+        }
+
+        const li = document.createElement("li");
+        li.className = "history-item";
+
+        li.innerHTML = `
+          <div class="history-top">
+            <span class="history-day" style="${itemPeli.isBonus ? 'color: var(--bonus);' : ''}">
+              ${itemPeli.isBonus ? '🖤 Bonus' : 'Día ' + d}
+            </span>
+            <div class="history-thumb-wrapper">
+              <img src="${itemPeli.imagen}" class="history-thumb-img" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='🎬'" />
+            </div>
+            <div class="history-content">
+              <div class="history-title">${itemPeli.titulo}</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+                <span>📺 ${itemPeli.plataforma}</span>
+                ${resumenPromedios || ` · <span style="color: #777;">Sin calificar</span>`}
+              </div>
+              ${keys.length > 0 ? `<button class="history-details-toggle" onclick="toggleDetallesHistorial(${d})">Ver notas de ambos</button>` : ""}
+            </div>
+          </div>
+
+          ${keys.length > 0 ? `
+            <div class="history-review-box" id="review-box-${d}">
+              ${contenidoResenas}
+            </div>
+          ` : ""}
+        `;
+        historyList.appendChild(li);
+      }
+    }
+  </script>
+</body>
+</html>
